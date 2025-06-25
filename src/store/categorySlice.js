@@ -7,6 +7,7 @@ export const fetchCategories = createAsyncThunk(
         const hostname = window.location.hostname;
 
         // פונקציה קטנה לבדיקת IP מקומי (private IP ranges)
+        // if RDS blocked for your local IP: retun true
         function isLocalIP(ip) {
             return (
                 ip === 'localhost' ||
@@ -17,7 +18,7 @@ export const fetchCategories = createAsyncThunk(
             );
         }
 
-        const baseUrl = isLocalIP(hostname)
+        const baseUrl = isLocalIP(hostname) 
             ? 'http://localhost:3033'
             : 'https://tjdavpjfkbpgrbdhxunjpx7ita0tqcit.lambda-url.eu-central-1.on.aws';
 
