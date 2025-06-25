@@ -10,6 +10,7 @@ export default function CartPage() {
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [errors, setErrors] = useState({});
+    const [status, setStatus] = useState('idle');
 
     const validate = () => {
         const newErrors = {};
@@ -36,6 +37,8 @@ export default function CartPage() {
             cart,
         };
 
+        setStatus('loading'); // 🔁 Start loading
+
         try {
             const response = await fetch(
                 'https://tjdavpjfkbpgrbdhxunjpx7ita0tqcit.lambda-url.eu-central-1.on.aws/save',
@@ -52,19 +55,26 @@ export default function CartPage() {
                 throw new Error(`Server error: ${response.status}`);
             }
 
-            const result = await response.json(); // אם הלמבדא מחזירה JSON
+            const result = await response.json();
             console.log('✅ Order sent successfully:', result);
             alert('ההזמנה נשלחה בהצלחה!');
+            setStatus('success'); // ✅ Done
         } catch (error) {
             console.error('❌ Failed to send order:', error);
             alert('שגיאה בשליחת ההזמנה. נסה שוב מאוחר יותר.');
+            setStatus('error'); // ❌ Error
         }
     };
 
 
     return (
         <div className="container" style={{ padding: '2rem' }}>
-            <h1>עגלת קניות</h1>
+            {status === 'loading' && <progress style={{
+                position: 'fixed',
+                top: 0,
+                left: 0
+            }} />}
+            <h1>סיכום הזמנה</h1>
             {cart.length === 0 ? (
                 <p>אין מוצרים בעגלה</p>
             ) : (
